@@ -1,0 +1,279 @@
+/* ==========================================================
+   Study OS — design tokens (Premium & polished direction)
+   Two modes sharing the same token names, so every component
+   that already reads var(--ink-1), var(--text-hi) etc. just
+   works — only the values change between light and dark.
+   ========================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root,
+[data-theme="dark"] {
+  --ink-0: #0c1116;       /* page background */
+  --ink-1: #151c23;       /* card surface */
+  --ink-2: #1c252d;       /* raised surface / hover / inputs */
+  --line: #29333c;        /* hairlines */
+  --text-hi: #f0f3f5;     /* primary text */
+  --text-mid: #a8b3bd;    /* secondary text */
+  --text-low: #6b7883;    /* tertiary / captions */
+
+  --amber: #dba54a;
+  --amber-dim: #3c3320;
+  --teal: #57a595;
+  --teal-dim: #16302b;
+  --red: #cf7364;
+
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
+  --page-texture: var(--line);
+}
+
+[data-theme="light"] {
+  --ink-0: #f7f5f0;       /* warm paper, not stark white */
+  --ink-1: #ffffff;
+  --ink-2: #f0eee7;
+  --line: #e2ded4;
+  --text-hi: #1c1a16;
+  --text-mid: #635e52;
+  --text-low: #948e7e;
+
+  --amber: #b17817;
+  --amber-dim: #f6e8cd;
+  --teal: #2f7d6a;
+  --teal-dim: #dcefe9;
+  --red: #ad4a3a;
+
+  --card-shadow: 0 1px 2px rgba(28, 26, 22, 0.04), 0 6px 20px rgba(28, 26, 22, 0.05);
+  --page-texture: #e9e5d9;
+}
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius: 5px;
+  --radius-card: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--ink-0);
+  background-image:
+    linear-gradient(var(--page-texture) 1px, transparent 1px),
+    linear-gradient(90deg, var(--page-texture) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-attachment: fixed;
+  background-position: -1px -1px;
+  opacity: 1;
+  color: var(--text-hi);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+[data-theme="light"] body { background-image:
+    linear-gradient(var(--page-texture) 1px, transparent 1px),
+    linear-gradient(90deg, var(--page-texture) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+a { color: inherit; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+.app-shell {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+  margin-bottom: 8px;
+}
+
+.masthead-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.masthead-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+
+.masthead-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.masthead-date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-low);
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--ink-1);
+  color: var(--text-mid);
+}
+
+.theme-toggle:hover {
+  color: var(--text-hi);
+  border-color: var(--text-low);
+}
+
+.card {
+  background: var(--ink-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--card-shadow);
+  padding: 22px 24px;
+  margin-bottom: 18px;
+}
+
+.card-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-low);
+  margin: 0 0 16px;
+}
+
+.card-label svg { flex-shrink: 0; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: var(--card-shadow);
+}
+
+.summary-cell {
+  background: var(--ink-1);
+  padding: 18px 20px;
+}
+
+.summary-cell .num {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.summary-cell .label {
+  font-size: 12px;
+  color: var(--text-mid);
+}
+
+.status-ok .num { color: var(--teal); }
+.status-warn .num { color: var(--amber); }
+.status-critical .num { color: var(--red); }
+.status-neutral .num { color: var(--text-hi); }
+
+@media (max-width: 640px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .app-shell { padding: 28px 16px 64px; }
+  .card { padding: 18px; }
+}
+
+.loading, .empty-state {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-low);
+  padding: 20px 0;
+}
+
+.error-banner {
+  border: 1px solid var(--red);
+  background: color-mix(in srgb, var(--red) 12%, transparent);
+  color: var(--red);
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+}
+
+/* Bottom nav: mobile-only, fixed, native-app-style */
+.bottom-nav {
+  display: none;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  flex: 1;
+  padding: 6px 0 2px;
+  font-size: 10px;
+  font-family: var(--font-body);
+}
+
+@media (max-width: 640px) {
+  .top-tabnav { display: none; }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--ink-1);
+    border-top: 1px solid var(--line);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 20;
+  }
+
+  .app-shell {
+    padding-bottom: 84px; /* room for the fixed bottom nav so content isn't hidden behind it */
+  }
+
+  .masthead-date { display: none; }
+}
