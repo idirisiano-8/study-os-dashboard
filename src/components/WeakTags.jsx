@@ -1,7 +1,8 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { displayName } from "../lib/displayName";
 
-const MIN_SAMPLE = 8; // ignore tags with too few reviews to be meaningful
+const MIN_SAMPLE = 8;
 
 export function computeWeakTags(reviews) {
   const byTag = new Map();
@@ -20,6 +21,16 @@ export function computeWeakTags(reviews) {
     .sort((a, b) => a.pct - b.pct)
     .slice(0, 8);
 }
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.04 } },
+};
+
+const rowVariant = {
+  hidden: { opacity: 0, x: -4 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.2 } },
+};
 
 export default function WeakTags({ reviews }) {
   const ranked = useMemo(() => computeWeakTags(reviews), [reviews]);
@@ -42,9 +53,9 @@ export default function WeakTags({ reviews }) {
           <th style={{ ...th, textAlign: "right" }}>RETENTION</th>
         </tr>
       </thead>
-      <tbody>
+      <motion.tbody variants={container} initial="hidden" animate="show">
         {ranked.map((r) => (
-          <tr key={r.tag} style={{ borderTop: "1px solid var(--line)" }}>
+          <motion.tr key={r.tag} variants={rowVariant} style={{ borderTop: "1px solid var(--line)" }}>
             <td style={td} title={r.tag}>{displayName(r.tag)}</td>
             <td style={{ ...td, textAlign: "right", fontFamily: "var(--font-mono)", color: "var(--text-mid)" }}>
               {r.total}
@@ -60,9 +71,9 @@ export default function WeakTags({ reviews }) {
                 {r.pct.toFixed(0)}%
               </span>
             </td>
-          </tr>
+          </motion.tr>
         ))}
-      </tbody>
+      </motion.tbody>
     </table>
   );
 }

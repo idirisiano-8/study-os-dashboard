@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 
 const MIN_SAMPLE = 6;
 
@@ -48,7 +49,6 @@ function buildSummary(reviews, snapshotHistory) {
     }
   }
 
-  // backlog trend across the week, summed across decks
   const byDate = new Map();
   for (const s of snapshotHistory) {
     byDate.set(s.snapshot_date, (byDate.get(s.snapshot_date) || 0) + (s.cards_due || 0));
@@ -70,7 +70,6 @@ function buildSummary(reviews, snapshotHistory) {
     else if (change > 5) sentences.push(`Backlog grew by ${change} cards over the period tracked — worth addressing before it compounds.`);
     else sentences.push(`Backlog stayed roughly flat over the period tracked.`);
   }
-
   if (biggestImprovement) {
     sentences.push(`${biggestImprovement.deck} improved the most, up ${biggestImprovement.delta.toFixed(0)} points from last week.`);
   }
@@ -87,6 +86,13 @@ function buildSummary(reviews, snapshotHistory) {
 export default function WeeklySummary({ reviews, snapshotHistory }) {
   const summary = useMemo(() => buildSummary(reviews, snapshotHistory), [reviews, snapshotHistory]);
   return (
-    <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--text-hi)", margin: 0 }}>{summary}</p>
+    <motion.p
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      style={{ fontSize: 14, lineHeight: 1.6, color: "var(--text-hi)", margin: 0 }}
+    >
+      {summary}
+    </motion.p>
   );
 }

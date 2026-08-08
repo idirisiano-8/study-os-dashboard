@@ -1,9 +1,7 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { displayName } from "../lib/displayName";
 
-// A card counts as a "leech" here if, of its last 5 reviews, 3 or more were Again (ease=1).
-// This mirrors Anki's own leech logic loosely, but we compute it ourselves so it works
-// even for people who haven't turned on Anki's leech tagging/suspension.
 const WINDOW = 5;
 const FAIL_THRESHOLD = 3;
 
@@ -28,11 +26,20 @@ export function computeLeeches(reviews) {
         fails,
         window: recent.length,
         lastReviewed: last.reviewed_at,
-      });
-    }
+      });    }
   }
   return leeches.sort((a, b) => b.fails - a.fails);
 }
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+};
+
+const badge = {
+  hidden: { opacity: 0, scale: 0.85 },
+  show: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 400, damping: 22 } },
+};
 
 export default function Leeches({ reviews }) {
   const leeches = useMemo(() => computeLeeches(reviews), [reviews]);
@@ -57,10 +64,11 @@ export default function Leeches({ reviews }) {
         last {WINDOW} reviews. Rewriting these — splitting them, adding a mnemonic, or
         reframing the question — usually fixes them faster than re-drilling as-is.
       </p>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      <motion.div style={{ display: "flex", flexWrap: "wrap", gap: 8 }} variants={container} initial="hidden" animate="show">
         {[...byDeck.entries()].map(([deck, count]) => (
-          <span
+          <motion.span
             key={deck}
+            variants={badge}
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: 12,
@@ -72,9 +80,9 @@ export default function Leeches({ reviews }) {
             }}
           >
             {displayName(deck)} <span style={{ color: "var(--red)" }}>· {count}</span>
-          </span>
+          </motion.span>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

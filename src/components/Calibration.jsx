@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { dateKey, localDateKey } from "../lib/dateHelpers";
 
-// Anki itself doesn't record "how confident were you before flipping the card,"
-// so true per-card calibration isn't available via AnkiConnect. This is the
-// practical substitute: log one gut-check confidence rating per day, then
-// compare it against that day's actual retention once it's known.
 const LEVELS = [
   { value: 1, label: "Rough" },
   { value: 2, label: "Shaky" },
@@ -21,7 +18,6 @@ export default function Calibration({ reviews }) {
   const [todayRating, setTodayRating] = useState(null);
   const [yesterdayRating, setYesterdayRating] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     let cancelled = false;
     async function load() {
@@ -68,27 +64,35 @@ export default function Calibration({ reviews }) {
       </p>
       <div style={{ display: "flex", gap: 6, marginBottom: 18 }}>
         {LEVELS.map((l) => (
-          <button
+          <motion.button
             key={l.value}
             onClick={() => setRating(l.value)}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            animate={{
+              backgroundColor: todayRating === l.value ? "var(--amber-dim)" : "var(--ink-2)",
+              borderColor: todayRating === l.value ? "var(--amber)" : "var(--line)",
+              color: todayRating === l.value ? "var(--amber)" : "var(--text-mid)",
+            }}
             style={{
               flex: 1,
               padding: "10px 6px",
               fontSize: 12,
               fontFamily: "var(--font-body)",
-              background: todayRating === l.value ? "var(--amber-dim)" : "var(--ink-2)",
-              border: todayRating === l.value ? "1px solid var(--amber)" : "1px solid var(--line)",
+              border: "1px solid",
               borderRadius: 3,
-              color: todayRating === l.value ? "var(--amber)" : "var(--text-mid)",
             }}
           >
             {l.label}
-          </button>
+          </motion.button>
         ))}
       </div>
-
       {yesterdayRating !== null && yesterdayActual !== null && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           style={{
             fontSize: 13,
             color: "var(--text-mid)",
@@ -103,7 +107,7 @@ export default function Calibration({ reviews }) {
           — actual retention was{" "}
           <strong style={{ color: "var(--text-hi)" }}>{yesterdayActual.toFixed(0)}%</strong>.
           {calibrationNote(yesterdayRating, yesterdayActual)}
-        </div>
+        </motion.div>
       )}
     </div>
   );

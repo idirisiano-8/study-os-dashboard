@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { supabase } from "../supabaseClient";
 
@@ -34,6 +35,7 @@ export default function LastSynced() {
   if (loading) return null;
 
   const hrsStale = lastSync ? (Date.now() - lastSync.getTime()) / (1000 * 60 * 60) : Infinity;
+  const isStale = hrsStale > 26;
   const color = hrsStale > 36 ? "var(--red)" : hrsStale > 26 ? "var(--amber)" : "var(--text-low)";
 
   return (
@@ -48,7 +50,13 @@ export default function LastSynced() {
         color,
       }}
     >
-      <RefreshCw size={11} />
+      <motion.span
+        animate={isStale ? { rotate: [0, 360] } : {}}
+        transition={isStale ? { duration: 2.4, repeat: Infinity, ease: "linear" } : {}}
+        style={{ display: "flex" }}
+      >
+        <RefreshCw size={11} />
+      </motion.span>
       {lastSync ? `synced ${timeAgo(lastSync)}` : "never synced"}
     </span>
   );

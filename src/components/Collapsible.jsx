@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 export default function Collapsible({ title, icon: Icon, defaultOpen = false, children }) {
@@ -6,8 +7,9 @@ export default function Collapsible({ title, icon: Icon, defaultOpen = false, ch
 
   return (
     <div style={{ marginBottom: 18 }}>
-      <button
+      <motion.button
         onClick={() => setOpen((o) => !o)}
+        whileTap={{ scale: 0.99 }}
         style={{
           display: "flex",
           alignItems: "center",
@@ -23,13 +25,28 @@ export default function Collapsible({ title, icon: Icon, defaultOpen = false, ch
           {Icon && <Icon size={16} color="var(--text-mid)" />}
           {title}
         </span>
-        <ChevronDown
-          size={16}
-          color="var(--text-low)"
-          style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}
-        />
-      </button>
-      {open && <div style={{ paddingTop: 16 }}>{children}</div>}
+        <motion.span
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          style={{ display: "flex" }}
+        >
+          <ChevronDown size={16} color="var(--text-low)" />
+        </motion.span>
+      </motion.button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ paddingTop: 16 }}>{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

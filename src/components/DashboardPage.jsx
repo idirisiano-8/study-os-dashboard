@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ListChecks, Gauge, Compass, TrendingUp, Grid3x3, Layers, Tags, Bug, Target, NotebookPen,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { localDateKey } from "../lib/dateHelpers";
 import SummaryStrip from "./SummaryStrip";
@@ -111,12 +112,40 @@ export default function DashboardPage({ onNavigate }) {
     );
   }
 
-  if (loading) return <p className="loading">Loading…</p>;
+  if (loading) {
+    return (
+      <>
+        <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="skeleton-block" style={{ height: 20, width: "40%" }} />
+          <div className="skeleton-block" style={{ height: 14, width: "70%" }} />
+          <div className="skeleton-block" style={{ height: 14, width: "55%" }} />
+        </div>
+        <div className="summary-grid">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="summary-cell" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <div className="skeleton-block" style={{ height: 28, width: "50%" }} />
+              <div className="skeleton-block" style={{ height: 12, width: "70%" }} />
+            </div>
+          ))}
+        </div>
+        <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="skeleton-block" style={{ height: 14, width: "30%" }} />
+          <div className="skeleton-block" style={{ height: 60, width: "100%" }} />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
       {/* HERO — what to do right now */}
-      <MissionHero reviews={reviews} snapshots={snapshots} onNavigate={onNavigate} />
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.32, ease: "easeOut" }}
+      >
+        <MissionHero reviews={reviews} snapshots={snapshots} onNavigate={onNavigate} />
+      </motion.div>
 
       <SummaryStrip
         reviewsToday={derived.reviewsToday}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useHandbookEntry } from "../lib/useHandbookEntry";
 import { dateKey } from "../lib/dateHelpers";
@@ -29,16 +30,12 @@ export default function Reflection() {
     return () => {
       cancelled = true;
     };
-    // Intentionally runs once on mount only — today's entry is excluded from
-    // this query anyway (.neq), so there's no need to refetch on every
-    // autosave keystroke while writing today's reflection.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function update(field, value) {
     setContent((c) => ({ ...c, [field]: value }));
   }
-
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
@@ -50,30 +47,48 @@ export default function Reflection() {
 
       {history.length > 0 && (
         <div style={{ marginTop: 18, borderTop: "1px solid var(--line)", paddingTop: 14 }}>
-          <button
+          <motion.button
             onClick={() => setShowHistory((s) => !s)}
+            whileTap={{ scale: 0.98 }}
             style={{
               display: "flex", alignItems: "center", gap: 6, background: "none", border: "none",
               padding: 0, fontSize: 12, color: "var(--text-mid)", fontFamily: "var(--font-mono)",
             }}
           >
-            <ChevronDown size={13} style={{ transform: showHistory ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+            <motion.span
+              animate={{ rotate: showHistory ? 180 : 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              style={{ display: "flex" }}
+            >
+              <ChevronDown size={13} />
+            </motion.span>
             Past reflections ({history.length})
-          </button>
-          {showHistory && (
-            <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 14 }}>
-              {history.map((h) => (
-                <div key={h.period_key} style={{ fontSize: 13, color: "var(--text-mid)" }}>
-                  <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-low)", marginBottom: 4 }}>
-                    {new Date(h.period_key).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
-                  </div>
-                  {h.content.wentWell && <div>✓ {h.content.wentWell}</div>}
-                  {h.content.difficult && <div>△ {h.content.difficult}</div>}
-                  {h.content.tomorrow && <div>→ {h.content.tomorrow}</div>}
+          </motion.button>
+          <AnimatePresence initial={false}>
+            {showHistory && (
+              <motion.div
+                key="history"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                style={{ overflow: "hidden" }}
+              >
+                <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 14 }}>
+                  {history.map((h) => (
+                    <div key={h.period_key} style={{ fontSize: 13, color: "var(--text-mid)" }}>
+                      <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-low)", marginBottom: 4 }}>
+                        {new Date(h.period_key).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
+                      </div>
+                      {h.content.wentWell && <div>✓ {h.content.wentWell}</div>}
+                      {h.content.difficult && <div>△ {h.content.difficult}</div>}
+                      {h.content.tomorrow && <div>→ {h.content.tomorrow}</div>}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </div>
@@ -88,6 +103,7 @@ function Field({ label, value, onChange, last }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={2}
+        className="reflection-textarea"
         style={{
           width: "100%",
           background: "var(--ink-2)",

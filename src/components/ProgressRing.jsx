@@ -1,7 +1,10 @@
+import { motion } from "framer-motion";
+
 export default function ProgressRing({ pct, size = 64, stroke = 6, color = "var(--amber)", label }) {
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (Math.min(100, Math.max(0, pct)) / 100) * circumference;
+  const clamped = Math.min(100, Math.max(0, pct));
+  const offset = circumference - (clamped / 100) * circumference;
 
   return (
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
@@ -14,7 +17,7 @@ export default function ProgressRing({ pct, size = 64, stroke = 6, color = "var(
           stroke="var(--ink-2)"
           strokeWidth={stroke}
         />
-        <circle
+        <motion.circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
@@ -22,9 +25,10 @@ export default function ProgressRing({ pct, size = 64, stroke = 6, color = "var(
           stroke={color}
           strokeWidth={stroke}
           strokeDasharray={circumference}
-          strokeDashoffset={offset}
           strokeLinecap="round"
-          style={{ transition: "stroke-dashoffset 0.4s ease" }}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
         />
       </svg>
       <div
@@ -37,9 +41,14 @@ export default function ProgressRing({ pct, size = 64, stroke = 6, color = "var(
           justifyContent: "center",
         }}
       >
-        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: size * 0.26, color: "var(--text-hi)" }}>
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: size * 0.26, color: "var(--text-hi)" }}
+        >
           {Math.round(pct)}%
-        </span>
+        </motion.span>
         {label && (
           <span style={{ fontSize: size * 0.13, color: "var(--text-low)", marginTop: 1 }}>{label}</span>
         )}

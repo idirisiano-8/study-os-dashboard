@@ -1,5 +1,16 @@
+import { motion } from "framer-motion";
 import { colorForSubject } from "../lib/subjectColors";
 import { displayName } from "../lib/displayName";
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+};
+
+const rowVariant = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.2 } },
+};
 
 export default function BacklogBars({ snapshots }) {
   if (!snapshots.length) {
@@ -10,9 +21,9 @@ export default function BacklogBars({ snapshots }) {
   const max = Math.max(...sorted.map((s) => s.cards_due), 1);
 
   return (
-    <div>
+    <motion.div variants={container} initial="hidden" animate="show">
       {sorted.map((s) => (
-        <div key={s.deck_name} style={{ marginBottom: 12 }}>
+        <motion.div key={s.deck_name} variants={rowVariant} style={{ marginBottom: 12 }}>
           <div
             style={{
               display: "flex",
@@ -37,18 +48,20 @@ export default function BacklogBars({ snapshots }) {
               overflow: "hidden",
             }}
           >
-            <div
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.max(2, (s.cards_due / max) * 100)}%` }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
               style={{
-                width: `${Math.max(2, (s.cards_due / max) * 100)}%`,
                 height: "100%",
                 background: barColor(s.cards_due, max),
                 borderRadius: 2,
               }}
             />
           </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
 

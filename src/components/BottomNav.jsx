@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export default function BottomNav({ active, onChange, tabs }) {
   return (
     <nav className="bottom-nav">
@@ -5,15 +7,17 @@ export default function BottomNav({ active, onChange, tabs }) {
         const Icon = t.icon;
         const isActive = active === t.key;
         return (
-          <button
+          <motion.button
             key={t.key}
             onClick={() => onChange(t.key)}
             className="bottom-nav-item"
-            style={{ color: isActive ? "var(--amber)" : "var(--text-low)" }}
+            whileTap={{ scale: 0.9 }}
+            animate={{ color: isActive ? "var(--amber)" : "var(--text-low)" }}
+            transition={{ duration: 0.18 }}
           >
             <Icon size={20} strokeWidth={isActive ? 2.4 : 2} />
             <span>{t.label.split(" ")[0]}</span>
-          </button>
+          </motion.button>
         );
       })}
     </nav>

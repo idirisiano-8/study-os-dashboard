@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useChecklist } from "../lib/useChecklist";
 import { localDateKey } from "../lib/dateHelpers";
@@ -33,10 +34,9 @@ export default function MissionHero({ reviews, snapshots, onNavigate }) {
     const backlogTotal = snapshots.reduce((s, x) => s + (x.cards_due || 0), 0);
     const leeches = computeLeeches(reviews);
 
-    // uses your own recent pace, not a flat guess — falls back to ~9s/card until there's enough history
     const secPerCard = averageSecondsPerCard(reviews);
     const reviewMinutes = Math.round((backlogTotal * secPerCard) / 60);
-    const leechMinutes = Math.min(leeches.length, 5) * 3; // cap the estimate at 5 leeches worth
+    const leechMinutes = Math.min(leeches.length, 5) * 3;
     const totalMinutes = reviewMinutes + leechMinutes;
     const hrs = Math.floor(totalMinutes / 60);
     const mins = totalMinutes % 60;
@@ -60,7 +60,13 @@ export default function MissionHero({ reviews, snapshots, onNavigate }) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-        <Sparkles size={15} color="var(--amber)" />
+        <motion.span
+          animate={{ scale: [1, 1.12, 1], rotate: [0, 8, 0] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+          style={{ display: "flex" }}
+        >
+          <Sparkles size={15} color="var(--amber)" />
+        </motion.span>
         <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-low)" }}>
           {greeting()} — today's mission
         </span>
@@ -85,8 +91,11 @@ export default function MissionHero({ reviews, snapshots, onNavigate }) {
           </p>
         </div>
 
-        <button
+        <motion.button
           onClick={() => onNavigate && onNavigate("checklists")}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
           style={{ background: "none", border: "none", padding: 0, textAlign: "center", cursor: "pointer" }}
           title="Open full checklist"
         >
@@ -94,7 +103,7 @@ export default function MissionHero({ reviews, snapshots, onNavigate }) {
           <div style={{ fontSize: 11, color: "var(--text-low)", marginTop: 6, fontFamily: "var(--font-mono)" }}>
             {doneCount}/{DAILY_ITEMS.length} today
           </div>
-        </button>
+        </motion.button>
       </div>
     </div>
   );

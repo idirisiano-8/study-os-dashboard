@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { BookOpen, Clock } from "lucide-react";
 import { computeTasks } from "./DailyTasks";
 import { computeLeeches } from "./Leeches";
@@ -18,11 +19,20 @@ function reasonsFor(task) {
 }
 
 function timeForRank(i, cardsDue, secPerCard) {
-  // rough allocation: higher priority gets more time, floored by backlog size
   const base = [45, 30, 20, 15, 10][i] || 10;
   const cardDriven = Math.round((cardsDue * secPerCard) / 60);
   return Math.max(10, Math.min(base, cardDriven || base));
 }
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07 } },
+};
+
+const row = {
+  hidden: { opacity: 0, x: -6 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: "easeOut" } },
+};
 
 export default function StudySessions({ reviews, snapshots }) {
   const sessions = useMemo(() => {
@@ -54,10 +64,16 @@ export default function StudySessions({ reviews, snapshots }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <motion.div
+      style={{ display: "flex", flexDirection: "column", gap: 10 }}
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
       {sessions.map((s, i) => (
-        <div
+        <motion.div
           key={s.title}
+          variants={row}
           style={{
             border: "1px solid var(--line)",
             borderRadius: "var(--radius)",
@@ -90,8 +106,8 @@ export default function StudySessions({ reviews, snapshots }) {
               <span>{s.resources.join(" · ")}</span>
             </div>
           )}
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

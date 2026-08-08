@@ -1,14 +1,10 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { localDateKey } from "../lib/dateHelpers";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const WEEKS_BACK = 18; // ~4.5 months, fits one screen width
+const WEEKS_BACK = 18;
 
-/**
- * Turns raw review rows into a per-day { count, accuracyPct } map,
- * then lays them out as a week-column grid, like a lab chart strip
- * rather than the default GitHub-green contribution grid.
- */
 function buildDayMap(reviews) {
   const map = new Map();
   for (const r of reviews) {
@@ -24,7 +20,6 @@ function buildDayMap(reviews) {
 function colorFor(entry) {
   if (!entry || entry.total === 0) return "var(--ink-2)";
   const acc = entry.correct / entry.total;
-  // volume drives opacity, accuracy drives hue (teal = strong, amber = shaky)
   const intensity = Math.min(1, 0.25 + entry.total / 40);
   const hue = acc >= 0.85 ? "79, 158, 141" : acc >= 0.7 ? "217, 164, 65" : "201, 106, 90";
   return `rgba(${hue}, ${intensity.toFixed(2)})`;
@@ -36,8 +31,7 @@ export default function Heatmap({ reviews }) {
   const { columns, monthLabels } = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    // align the grid end to the most recent Saturday so weeks are full columns
-    const endDow = today.getDay(); // 0 = Sun
+    const endDow = today.getDay();
     const gridEnd = new Date(today.getTime() + (6 - endDow) * DAY_MS);
     const totalDays = WEEKS_BACK * 7;
     const gridStart = new Date(gridEnd.getTime() - (totalDays - 1) * DAY_MS);
@@ -69,7 +63,11 @@ export default function Heatmap({ reviews }) {
   const width = WEEKS_BACK * (cell + gap);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <svg
         viewBox={`0 0 ${width} ${7 * (cell + gap) + 16}`}
         style={{ width: "100%", height: "auto", display: "block" }}
@@ -128,7 +126,7 @@ export default function Heatmap({ reviews }) {
         <LegendDot color="rgba(201,106,90,0.9)" label="weak (<70%)" />
         <LegendDot color="var(--ink-2)" label="no reviews" />
       </div>
-    </div>
+    </motion.div>
   );
 }
 

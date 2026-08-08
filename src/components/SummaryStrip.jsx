@@ -1,8 +1,26 @@
+import { motion } from "framer-motion";
 import ProgressRing from "./ProgressRing";
+
+const container = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.06 },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.28, ease: "easeOut" } },
+};
 
 export default function SummaryStrip({ reviewsToday, backlogTotal, streak, retention7d }) {
   return (
-    <div className="summary-grid">
+    <motion.div
+      className="summary-grid"
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
       <Cell
         value={reviewsToday}
         label="reviews today"
@@ -18,7 +36,11 @@ export default function SummaryStrip({ reviewsToday, backlogTotal, streak, reten
         label="review streak"
         status={streak >= 3 ? "ok" : "neutral"}
       />
-      <div className="summary-cell" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <motion.div
+        className="summary-cell"
+        variants={item}
+        style={{ display: "flex", alignItems: "center", gap: 12 }}
+      >
         {retention7d !== null ? (
           <ProgressRing
             pct={retention7d}
@@ -30,16 +52,16 @@ export default function SummaryStrip({ reviewsToday, backlogTotal, streak, reten
           <span className="num" style={{ fontSize: 28 }}>—</span>
         )}
         <span className="label">retention, 7d</span>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
 function Cell({ value, label, status }) {
   return (
-    <div className={`summary-cell status-${status}`}>
+    <motion.div className={`summary-cell status-${status}`} variants={item}>
       <span className="num">{value}</span>
       <span className="label">{label}</span>
-    </div>
+    </motion.div>
   );
 }

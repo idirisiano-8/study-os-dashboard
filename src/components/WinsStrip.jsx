@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { Trophy, Flame, TrendingUp, Star } from "lucide-react";
 
 const MIN_SAMPLE = 6;
@@ -19,7 +20,6 @@ function computeWins(reviews, snapshotHistory, streak) {
     wins.push({ icon: Flame, text: `${streak}-day review streak`, color: "var(--amber)" });
   }
 
-  // backlog trend
   const byDate = new Map();
   for (const s of snapshotHistory) byDate.set(s.snapshot_date, (byDate.get(s.snapshot_date) || 0) + (s.cards_due || 0));
   const dates = [...byDate.keys()].sort();
@@ -29,10 +29,8 @@ function computeWins(reviews, snapshotHistory, streak) {
     if (start > 0 && end < start) {
       const pct = Math.round(((start - end) / start) * 100);
       if (pct >= 10) wins.push({ icon: Trophy, text: `Backlog down ${pct}% this stretch`, color: "var(--teal)" });
-    }
-  }
+    }  }
 
-  // retention improvement week over week
   if (thisWeek.length >= MIN_SAMPLE && lastWeek.length >= MIN_SAMPLE) {
     const thisAcc = (thisWeek.filter((r) => r.is_correct).length / thisWeek.length) * 100;
     const lastAcc = (lastWeek.filter((r) => r.is_correct).length / lastWeek.length) * 100;
@@ -41,7 +39,6 @@ function computeWins(reviews, snapshotHistory, streak) {
     }
   }
 
-  // best performing deck this week
   const byDeck = new Map();
   for (const r of thisWeek) {
     if (!byDeck.has(r.deck_name)) byDeck.set(r.deck_name, { total: 0, correct: 0 });
@@ -61,6 +58,16 @@ function computeWins(reviews, snapshotHistory, streak) {
   return wins;
 }
 
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const badge = {
+  hidden: { opacity: 0, scale: 0.85, y: 4 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 400, damping: 22 } },
+};
+
 export default function WinsStrip({ reviews, snapshotHistory, streak }) {
   const wins = useMemo(() => computeWins(reviews, snapshotHistory, streak), [reviews, snapshotHistory, streak]);
 
@@ -71,14 +78,19 @@ export default function WinsStrip({ reviews, snapshotHistory, streak }) {
       </p>
     );
   }
-
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+    <motion.div
+      style={{ display: "flex", flexWrap: "wrap", gap: 8 }}
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
       {wins.map((w, i) => {
         const Icon = w.icon;
         return (
-          <span
+          <motion.span
             key={i}
+            variants={badge}
             style={{
               display: "flex",
               alignItems: "center",
@@ -92,9 +104,9 @@ export default function WinsStrip({ reviews, snapshotHistory, streak }) {
           >
             <Icon size={13} />
             {w.text}
-          </span>
+          </motion.span>
         );
       })}
-    </div>
+    </motion.div>
   );
 }
