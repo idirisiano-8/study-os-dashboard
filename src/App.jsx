@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { LayoutDashboard, CalendarDays, GraduationCap, CheckSquare } from "lucide-react";
-import TabNav from "./components/TabNav";
+import { LayoutDashboard, CalendarDays, GraduationCap, CheckSquare, Bell, Search } from "lucide-react";
 import BottomNav from "./components/BottomNav";
 import ThemeToggle from "./components/ThemeToggle";
 import LastSynced from "./components/LastSynced";
@@ -19,7 +18,7 @@ const TABS = [
 export default function App() {
   const [tab, setTab] = useState("dashboard");
   const [visited, setVisited] = useState(new Set(["dashboard"]));
-  const [theme, setTheme] = useState(() => localStorage.getItem("studyos-theme") || "dark");
+  const [theme, setTheme] = useState(() => localStorage.getItem("studyos-theme") || "light");
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -33,50 +32,70 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <header className="masthead">
-        <div className="masthead-left">
-          <span className="masthead-title">Idirisiano</span>
+      <aside className="workspace-sidebar">
+        <div className="brand-lockup">
+          <div className="brand-mark">S</div>
+          <div>
+            <span className="brand-name">Study OS</span>
+            <span className="brand-subtitle">Idirisiano's workspace</span>
+          </div>
         </div>
-        <div className="masthead-right">
+
+        <nav className="sidebar-nav" aria-label="Primary navigation">
+          <span className="nav-group-label">Workspace</span>
+          {TABS.map((item) => {
+            const Icon = item.icon;
+            const isActive = tab === item.key;
+            return (
+              <button
+                key={item.key}
+                className={`sidebar-nav-item ${isActive ? "is-active" : ""}`}
+                onClick={() => goTo(item.key)}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon size={18} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="sidebar-footer">
+          <span className="sidebar-footer-label">Study mode</span>
+          <div className="study-mode"><span /> Deep work</div>
+        </div>
+      </aside>
+
+      <main className="workspace-main">
+        <header className="masthead">
+          <div className="masthead-left">
+            <div>
+              <span className="masthead-title">{TABS.find((item) => item.key === tab)?.label}</span>
+              <span className="masthead-context">Your personal study command center</span>
+            </div>
+          </div>
+          <div className="masthead-right">
+            <button className="masthead-icon" aria-label="Search"><Search size={18} /></button>
+            <button className="masthead-icon notification-button" aria-label="Notifications"><Bell size={18} /><i /></button>
+            <span className="masthead-date">
+              {new Date().toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
+            </span>
+            <span className="avatar" aria-label="Idirisiano">I</span>
+          </div>
+        </header>
+
+        <div className="workspace-statusbar">
           <LastSynced />
-          <span className="masthead-date">
-            {new Date().toLocaleDateString(undefined, {
-              weekday: "long",
-              month: "short",
-              day: "numeric",
-            })}
-          </span>
           <ThemeToggle theme={theme} onToggle={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} />
         </div>
-      </header>
 
-      <div className="top-tabnav">
-        <TabNav active={tab} onChange={goTo} tabs={TABS} />
-      </div>
-
-      {/* Each page mounts the first time its tab is opened, then stays mounted
-          (just hidden) after that — so switching back to an already-visited
-          tab is instant, but tabs you never open never cost a fetch. */}
-      {visited.has("dashboard") && (
-        <div style={{ display: tab === "dashboard" ? "block" : "none" }}>
-          <DashboardPage onNavigate={goTo} />
+        <div className="workspace-content">
+          {visited.has("dashboard") && <div style={{ display: tab === "dashboard" ? "block" : "none" }}><DashboardPage onNavigate={goTo} /></div>}
+          {visited.has("weekly") && <div style={{ display: tab === "weekly" ? "block" : "none" }}><WeeklyPlan /></div>}
+          {visited.has("semester") && <div style={{ display: tab === "semester" ? "block" : "none" }}><SemesterPlan /></div>}
+          {visited.has("checklists") && <div style={{ display: tab === "checklists" ? "block" : "none" }}><Checklists /></div>}
         </div>
-      )}
-      {visited.has("weekly") && (
-        <div style={{ display: tab === "weekly" ? "block" : "none" }}>
-          <WeeklyPlan />
-        </div>
-      )}
-      {visited.has("semester") && (
-        <div style={{ display: tab === "semester" ? "block" : "none" }}>
-          <SemesterPlan />
-        </div>
-      )}
-      {visited.has("checklists") && (
-        <div style={{ display: tab === "checklists" ? "block" : "none" }}>
-          <Checklists />
-        </div>
-      )}
+      </main>
 
       <BottomNav active={tab} onChange={goTo} tabs={TABS} />
     </div>

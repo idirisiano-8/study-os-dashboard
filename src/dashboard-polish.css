@@ -1,0 +1,192 @@
+/* Dashboard polish — additive classes for the dashboard surface */
+
+.card:hover {
+  transform: none;
+  box-shadow: var(--card-shadow);
+  border-color: var(--line);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card--interactive {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card--interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.28), 0 12px 32px rgba(0, 0, 0, 0.22);
+    border-color: var(--text-low);
+  }
+
+  [data-theme="light"] .card--interactive:hover {
+    box-shadow: 0 2px 4px rgba(28, 26, 22, 0.06), 0 12px 28px rgba(28, 26, 22, 0.08);
+  }
+}
+
+.mission-hero {
+  background: linear-gradient(135deg, var(--ink-1), var(--ink-2));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--card-shadow);
+  padding: 28px 26px;
+  margin-bottom: 18px;
+}
+
+.mission-hero-heading {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--text-hi);
+  margin: 0 0 8px;
+}
+
+.mission-hero-body {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.mission-hero-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.mission-hero-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.mission-hero-checklist {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mission-hero-checklist-label {
+  font-size: 11px;
+  color: var(--text-low);
+  margin-top: 6px;
+  font-family: var(--font-mono);
+}
+
+.narrative-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-hi);
+  margin: 0;
+}
+
+.narrative-text--muted {
+  color: var(--text-mid);
+}
+
+.dashboard-section {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.collapsible-panel {
+  padding-top: 16px;
+}
+
+.collapsible-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  color: inherit;
+  transition: color 0.18s ease;
+}
+
+.collapsible-toggle:hover {
+  color: var(--text-hi);
+}
+
+.collapsible-toggle:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.collapsible-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--text-hi);
+}
+
+.session-row {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  background: var(--ink-2);
+}
+
+.reflection-history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-mid);
+}
+
+.reflection-history-item svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.summary-ring {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  margin-bottom: 6px;
+}
+
+.dashboard-loading-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .mission-hero {
+    padding: 22px 18px;
+  }
+
+  .mission-hero-layout {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .mission-hero-checklist {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .mission-hero-checklist-label {
+    margin-top: 0;
+  }
+}

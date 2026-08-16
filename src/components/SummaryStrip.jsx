@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import ProgressRing from "./ProgressRing";
 
 const container = {
   hidden: {},
@@ -36,23 +35,11 @@ export default function SummaryStrip({ reviewsToday, backlogTotal, streak, reten
         label="review streak"
         status={streak >= 3 ? "ok" : "neutral"}
       />
-      <motion.div
-        className="summary-cell"
-        variants={item}
-        style={{ display: "flex", alignItems: "center", gap: 12 }}
-      >
-        {retention7d !== null ? (
-          <ProgressRing
-            pct={retention7d}
-            size={44}
-            stroke={4}
-            color={retention7d >= 85 ? "var(--teal)" : retention7d >= 70 ? "var(--amber)" : "var(--red)"}
-          />
-        ) : (
-          <span className="num" style={{ fontSize: 28 }}>—</span>
-        )}
-        <span className="label">retention, 7d</span>
-      </motion.div>
+      <Cell
+        value={retention7d !== null ? `${Math.round(retention7d)}%` : "—"}
+        label="retention, 7d"
+        status={retention7d >= 85 ? "ok" : retention7d >= 70 ? "warn" : "neutral"}
+      />
     </motion.div>
   );
 }

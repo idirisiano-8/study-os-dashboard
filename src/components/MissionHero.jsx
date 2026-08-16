@@ -1,12 +1,10 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 import { useChecklist } from "../lib/useChecklist";
 import { localDateKey } from "../lib/dateHelpers";
 import { computeTasks } from "./DailyTasks";
 import { computeLeeches } from "./Leeches";
 import { averageSecondsPerCard } from "../lib/pace";
-import ProgressRing from "./ProgressRing";
 import { displayName } from "../lib/displayName";
 
 const DAILY_ITEMS = [
@@ -17,13 +15,6 @@ const DAILY_ITEMS = [
   "New Anki cards created from today's understanding",
   "Gym or football session, if scheduled today",
 ];
-
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
-}
 
 export default function MissionHero({ reviews, snapshots, onNavigate }) {
   const checklist = useChecklist(`daily:${localDateKey()}`, DAILY_ITEMS);
@@ -49,31 +40,9 @@ export default function MissionHero({ reviews, snapshots, onNavigate }) {
   const completionPct = Math.round((doneCount / DAILY_ITEMS.length) * 100);
 
   return (
-    <div
-      style={{
-        background: "linear-gradient(135deg, var(--ink-1), var(--ink-2))",
-        border: "1px solid var(--line)",
-        borderRadius: "var(--radius-card)",
-        boxShadow: "var(--card-shadow)",
-        padding: "28px 26px",
-        marginBottom: 18,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-        <motion.span
-          animate={{ scale: [1, 1.12, 1], rotate: [0, 8, 0] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-          style={{ display: "flex" }}
-        >
-          <Sparkles size={15} color="var(--amber)" />
-        </motion.span>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-low)" }}>
-          {greeting()} — today's mission
-        </span>
-      </div>
-
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+    <div className="mission-hero">
+      <div className="mission-hero-layout">
+        <div className="mission-hero-copy">
           {mission.backlogTotal === 0 ? (
             <p style={{ fontFamily: "var(--font-display)", fontSize: 22, margin: "6px 0 4px", color: "var(--text-hi)" }}>
               Backlog's clear — a lighter day.
@@ -91,18 +60,16 @@ export default function MissionHero({ reviews, snapshots, onNavigate }) {
           </p>
         </div>
 
-        <motion.button
+        <motion.button className="mission-hero-checklist"
           onClick={() => onNavigate && onNavigate("checklists")}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          style={{ background: "none", border: "none", padding: 0, textAlign: "center", cursor: "pointer" }}
           title="Open full checklist"
+          aria-label={`Open checklist: ${doneCount} of ${DAILY_ITEMS.length} items complete`}
         >
-          <ProgressRing pct={completionPct} color={completionPct === 100 ? "var(--teal)" : "var(--amber)"} />
-          <div style={{ fontSize: 11, color: "var(--text-low)", marginTop: 6, fontFamily: "var(--font-mono)" }}>
-            {doneCount}/{DAILY_ITEMS.length} today
-          </div>
+          <span className="mission-completion-value">{completionPct}%</span>
+          <div className="mission-hero-checklist-label">{doneCount}/{DAILY_ITEMS.length} today</div>
         </motion.button>
       </div>
     </div>
