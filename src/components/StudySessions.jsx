@@ -24,6 +24,35 @@ function timeForRank(i, cardsDue, secPerCard) {
   return Math.max(10, Math.min(base, cardDriven || base));
 }
 
+/**
+ * Shared session-planning logic, used by both the full StudySessions
+ * card and the compact CompactSessions card in the glance row —
+ * one source of truth so the two views never drift apart.
+ */
+export function computeSessions(reviews, snapshots) {
+  const tasks = computeTasks(reviews, snapshots).slice(0, 3);
+  const leeches = computeLeeches(reviews);
+  const secPerCard = averageSecondsPerCard(reviews);
+
+  const out = tasks.map((t, i) => ({
+    title: t.deck,
+    minutes: timeForRank(i, t.cardsDue, secPerCard),
+    reasons: reasonsFor(t),
+    resources: resourcesFor(t.deck),
+  }));
+
+  if (leeches.length > 0) {
+    out.push({
+      title: "Rewrite leech cards",
+      minutes: Math.min(leeches.length, 5) * 3,
+      reasons: [`${leeches.length} card${leeches.length === 1 ? "" : "s"} failed repeatedly`, "Rewriting beats re-drilling as-is"],
+      resources: null,
+    });
+  }
+
+  return out;
+}
+
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07 } },
@@ -35,29 +64,7 @@ const row = {
 };
 
 export default function StudySessions({ reviews, snapshots }) {
-  const sessions = useMemo(() => {
-    const tasks = computeTasks(reviews, snapshots).slice(0, 3);
-    const leeches = computeLeeches(reviews);
-    const secPerCard = averageSecondsPerCard(reviews);
-
-    const out = tasks.map((t, i) => ({
-      title: t.deck,
-      minutes: timeForRank(i, t.cardsDue, secPerCard),
-      reasons: reasonsFor(t),
-      resources: resourcesFor(t.deck),
-    }));
-
-    if (leeches.length > 0) {
-      out.push({
-        title: "Rewrite leech cards",
-        minutes: Math.min(leeches.length, 5) * 3,
-        reasons: [`${leeches.length} card${leeches.length === 1 ? "" : "s"} failed repeatedly`, "Rewriting beats re-drilling as-is"],
-        resources: null,
-      });
-    }
-
-    return out;
-  }, [reviews, snapshots]);
+  const sessions = useMemo(() => computeSessions(reviews, snapshots), [reviews, snapshots]);
 
   if (!sessions.length) {
     return <p className="empty-state">Nothing to schedule right now — enjoy the lighter day.</p>;

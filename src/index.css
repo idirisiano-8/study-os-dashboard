@@ -514,3 +514,470 @@ input:focus, textarea:focus { outline: 2px solid color-mix(in srgb, var(--teal) 
   .bottom-nav { z-index: 30; display: flex; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0)); border-top: 1px solid var(--line); background: rgba(255,255,255,.96); box-shadow: 0 -8px 24px rgba(36,54,43,.05); }
   .bottom-nav-item { gap: 4px; color: var(--text-low); }
 }
+
+/* ==========================================================
+   Study analytics — compact multi-ring summary
+   ========================================================== */
+
+.study-analytics {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--ink-1);
+  box-shadow: none;
+}
+
+.analytics-rings {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.analytics-rings svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+
+.analytics-ring-track {
+  stroke: var(--line);
+}
+
+.analytics-ring {
+  transition: stroke-dashoffset 0.7s cubic-bezier(.22, 1, .36, 1);
+}
+
+.ring-teal {
+  stroke: var(--teal);
+}
+
+.ring-amber {
+  stroke: var(--amber);
+}
+
+.ring-blue {
+  stroke: var(--blue, #4778c7);
+}
+
+.ring-violet {
+  stroke: var(--violet, #8067b7);
+}
+
+.analytics-details {
+  min-width: 0;
+}
+
+.analytics-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.analytics-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--text-mid);
+  text-transform: uppercase;
+}
+
+.analytics-description {
+  font-size: 11px;
+  color: var(--text-low);
+}
+
+.analytics-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 13px;
+}
+
+.analytics-metric {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.analytics-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.dot-teal {
+  background: var(--teal);
+}
+
+.dot-amber {
+  background: var(--amber);
+}
+
+.dot-blue {
+  background: var(--blue, #4778c7);
+}
+
+.dot-violet {
+  background: var(--violet, #8067b7);
+}
+
+.analytics-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--text-low);
+}
+
+.analytics-value {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.035em;
+  color: var(--text-hi);
+}
+
+@media (max-width: 760px) {
+  .study-analytics {
+    grid-template-columns: 125px minmax(0, 1fr);
+    gap: 18px;
+    padding: 18px;
+  }
+
+  .analytics-rings {
+    width: 116px;
+    height: 116px;
+  }
+
+  .analytics-heading {
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .analytics-description {
+    display: none;
+  }
+
+  .analytics-metrics {
+    grid-template-columns: 1fr;
+    row-gap: 11px;
+  }
+
+  .analytics-value {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .study-analytics {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    text-align: center;
+  }
+
+  .analytics-rings {
+    width: 132px;
+    height: 132px;
+  }
+
+  .analytics-heading {
+    text-align: left;
+  }
+
+  .analytics-metrics {
+    text-align: left;
+  }
+}
+/* ==========================================================
+   Today at a glance — row layout + calendar card
+   Append this block to the END of src/index.css.
+   Uses existing tokens (--teal, --amber, --line, --text-*)
+   and the existing .card base styling for the calendar.
+   ========================================================== */
+
+.dashboard-glance-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.dashboard-glance-row .study-analytics {
+  flex: 1 1 340px;
+  margin-bottom: 0;
+}
+
+.dashboard-glance-row .calendar-card {
+  flex: 1 1 240px;
+  max-width: 300px;
+  margin-bottom: 0;
+}
+
+.calendar-weekday-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-low);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 12px;
+  color: var(--text-mid);
+}
+
+.calendar-day-blank {
+  visibility: hidden;
+}
+
+.calendar-day-studied {
+  background: var(--teal);
+  color: #fff;
+  font-weight: 600;
+}
+
+.calendar-day-today {
+  border: 1.5px solid var(--amber);
+  font-weight: 700;
+  color: var(--text-hi);
+}
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-low);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  margin-top: 12px;
+}
+
+.calendar-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.calendar-legend-dot-studied {
+  background: var(--teal);
+}
+
+.calendar-legend-dot-today {
+  border: 1.5px solid var(--amber);
+  margin-left: 8px;
+}
+
+@media (max-width: 640px) {
+  .dashboard-glance-row {
+    flex-direction: column;
+  }
+  .dashboard-glance-row .calendar-card {
+    max-width: none;
+  }
+}
+/* ==========================================================
+   Today at a glance row — now THREE cards (rings / sessions /
+   calendar). Append this to the END of src/index.css, after the
+   first append-to-index.css block.
+   ========================================================== */
+
+/* Resize the rings card down for the 3-card row (overrides the
+   earlier wider sizing from the first append). */
+.dashboard-glance-row .compact-glance-card {
+  flex: 1 1 195px;
+  max-width: 220px;
+  margin-bottom: 0;
+}
+
+.dashboard-glance-row .compact-glance-card .analytics-rings {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+}
+
+.dashboard-glance-row .compact-glance-card .analytics-heading,
+.dashboard-glance-row .compact-glance-card .analytics-kicker {
+  margin-bottom: 10px;
+}
+
+/* Icon-badge metric rows (replaces the plain-dot layout for this card) */
+.analytics-metrics--icons {
+  grid-template-columns: 1fr;
+  row-gap: 8px;
+}
+
+.analytics-metric--icon {
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  gap: 7px;
+}
+
+.analytics-metric-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Calendar card — narrower now that it shares the row with 2 others */
+.dashboard-glance-row .calendar-card {
+  flex: 1 1 190px;
+  max-width: 210px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.calendar-month-label {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.calendar-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--ink-2);
+  color: var(--text-mid);
+  flex-shrink: 0;
+}
+
+.calendar-nav-btn:hover {
+  color: var(--text-hi);
+  border-color: var(--text-low);
+}
+
+/* Compact sessions card */
+.compact-sessions-card {
+  flex: 1 1 220px;
+  max-width: 240px;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-sessions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.compact-sessions-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: var(--ink-2);
+}
+
+.compact-sessions-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.compact-sessions-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-hi);
+}
+
+.compact-sessions-minutes {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mid);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .dashboard-glance-row .compact-glance-card,
+  .compact-sessions-card,
+  .dashboard-glance-row .calendar-card {
+    max-width: none;
+  }
+}
+/* ==========================================================
+   Fixes: "Today" glance card was using the inherited
+   .study-analytics grid (180px rings column + flexible metrics
+   column), which doesn't fit at ~220px card width and was
+   clipping the metrics content. Switch this variant to a
+   vertical stack. Also centers the calendar month label.
+   Append this to the END of src/index.css, after the previous
+   two append blocks.
+   ========================================================== */
+
+.compact-glance-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.compact-glance-card .analytics-kicker {
+  margin: 0;
+}
+
+.compact-glance-card .analytics-rings {
+  margin: 0 auto;
+}
+
+.compact-glance-card .analytics-metrics--icons {
+  grid-template-columns: 1fr;
+  row-gap: 8px;
+}
+
+.calendar-month-label {
+  justify-content: center;
+}

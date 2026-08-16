@@ -1,22 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  ListChecks, Gauge, Compass, TrendingUp, Grid3x3, Layers, Tags, Bug, Target, NotebookPen,
+  Compass, TrendingUp, Grid3x3, Layers, Tags, Bug, Target, NotebookPen,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "../supabaseClient";
 import { localDateKey } from "../lib/dateHelpers";
-import SummaryStrip from "./SummaryStrip";
+import AnalyticsRings from "./AnalyticsRings";
+import CompactSessions from "./CompactSessions";
+import CompactCalendar from "./CompactCalendar";
+import StudyActivityChart from "./StudyActivityChart";
 import Heatmap from "./Heatmap";
 import BacklogBars from "./BacklogBars";
 import WeakTags from "./WeakTags";
 import Leeches from "./Leeches";
 import Calibration from "./Calibration";
 import MissionHero from "./MissionHero";
-import StudySessions from "./StudySessions";
 import WinsStrip from "./WinsStrip";
 import Reflection from "./Reflection";
 import Collapsible from "./Collapsible";
-import { ReadinessNarrative, FatigueNarrative, ForecastNarrative, WeakTagNarrative } from "./FocusNarrative";
+import { ReadinessNarrative, ForecastNarrative, WeakTagNarrative } from "./FocusNarrative";
 import ReadinessScores from "./ReadinessScores";
 import WeeklySummary from "./WeeklySummary";
 
@@ -114,25 +116,10 @@ export default function DashboardPage({ onNavigate }) {
 
   if (loading) {
     return (
-      <>
-        <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div className="skeleton-block" style={{ height: 20, width: "40%" }} />
-          <div className="skeleton-block" style={{ height: 14, width: "70%" }} />
-          <div className="skeleton-block" style={{ height: 14, width: "55%" }} />
-        </div>
-        <div className="summary-grid">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="summary-cell" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div className="skeleton-block" style={{ height: 28, width: "50%" }} />
-              <div className="skeleton-block" style={{ height: 12, width: "70%" }} />
-            </div>
-          ))}
-        </div>
-        <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div className="skeleton-block" style={{ height: 14, width: "30%" }} />
-          <div className="skeleton-block" style={{ height: 60, width: "100%" }} />
-        </div>
-      </>
+      <div className="card" style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div className="skeleton-block" style={{ height: 20, width: "40%" }} />
+        <div className="skeleton-block" style={{ height: 14, width: "70%" }} />
+      </div>
     );
   }
 
@@ -147,27 +134,52 @@ export default function DashboardPage({ onNavigate }) {
         <MissionHero reviews={reviews} snapshots={snapshots} onNavigate={onNavigate} />
       </motion.div>
 
-      <SummaryStrip
-        reviewsToday={derived.reviewsToday}
-        backlogTotal={derived.backlogTotal}
-        streak={derived.streak}
-        retention7d={derived.retention7d}
-      />
+      {/* ROW 3: 4 CARDS SIDE-BY-SIDE */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: "16px",
+          marginBottom: "16px",
+          alignItems: "stretch",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <AnalyticsRings
+            reviewsToday={derived.reviewsToday}
+            backlogTotal={derived.backlogTotal}
+            streak={derived.streak}
+            retention7d={derived.retention7d}
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <CompactSessions reviews={reviews} snapshots={snapshots} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <CompactCalendar reviews={reviews} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <section className="card" style={{ margin: 0, height: "100%", display: "flex", flexDirection: "column", boxSizing: "border-box" }}>
+            <p className="card-label"><NotebookPen size={13} />Daily reflection</p>
+            <Reflection />
+          </section>
+        </div>
+      </div>
+
+      {/* ROW 4: DEDICATED STUDY ACTIVITY CHART ROW */}
+      <div style={{ marginBottom: "16px", width: "100%" }}>
+        <StudyActivityChart reviews={reviews} />
+      </div>
 
       <section className="card">
         <p className="card-label"><Target size={13} />Wins this week</p>
         <WinsStrip reviews={reviews} snapshotHistory={snapshotHistory} streak={derived.streak} />
       </section>
 
-      {/* TODAY'S FOCUS — narrative recommendations */}
+      {/* TODAY'S FOCUS */}
       <section className="card">
         <p className="card-label"><Compass size={13} />Readiness</p>
         <ReadinessNarrative reviews={reviews} snapshots={snapshots} />
-      </section>
-
-      <section className="card">
-        <p className="card-label"><Gauge size={13} />Today's session</p>
-        <FatigueNarrative reviews={reviews} />
       </section>
 
       <section className="card">
@@ -175,55 +187,50 @@ export default function DashboardPage({ onNavigate }) {
         <WeakTagNarrative reviews={reviews} />
       </section>
 
-      <section className="card">
-        <p className="card-label"><ListChecks size={13} />Study sessions</p>
-        <StudySessions reviews={reviews} snapshots={snapshots} />
-      </section>
+      {/* PROGRESS & MAINTENANCE — side by side */}
+      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", width: "100%" }}>
+        <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+          <Collapsible title="Progress" icon={TrendingUp}>
+            <section className="card">
+              <p className="card-label">This week, in plain terms</p>
+              <WeeklySummary reviews={reviews} snapshotHistory={snapshotHistory} />
+            </section>
+            <section className="card">
+              <p className="card-label"><TrendingUp size={13} />Workload forecast</p>
+              <ForecastNarrative snapshotHistory={snapshotHistory} />
+            </section>
+            <section className="card">
+              <p className="card-label"><Compass size={13} />Readiness by subject</p>
+              <ReadinessScores reviews={reviews} snapshots={snapshots} />
+            </section>
+            <section className="card">
+              <p className="card-label"><Grid3x3 size={13} />Review activity — past 18 weeks</p>
+              <Heatmap reviews={reviews} />
+            </section>
+          </Collapsible>
+        </div>
 
-      <section className="card">
-        <p className="card-label"><NotebookPen size={13} />Daily reflection</p>
-        <Reflection />
-      </section>
-
-      {/* PROGRESS — secondary, collapsed by default */}
-      <Collapsible title="Progress" icon={TrendingUp}>
-        <section className="card">
-          <p className="card-label">This week, in plain terms</p>
-          <WeeklySummary reviews={reviews} snapshotHistory={snapshotHistory} />
-        </section>
-        <section className="card">
-          <p className="card-label"><TrendingUp size={13} />Workload forecast</p>
-          <ForecastNarrative snapshotHistory={snapshotHistory} />
-        </section>
-        <section className="card">
-          <p className="card-label"><Compass size={13} />Readiness by subject</p>
-          <ReadinessScores reviews={reviews} snapshots={snapshots} />
-        </section>
-        <section className="card">
-          <p className="card-label"><Grid3x3 size={13} />Review activity — past 18 weeks</p>
-          <Heatmap reviews={reviews} />
-        </section>
-      </Collapsible>
-
-      {/* MAINTENANCE — support tools, collapsed by default */}
-      <Collapsible title="Maintenance" icon={Layers}>
-        <section className="card">
-          <p className="card-label"><Layers size={13} />Backlog by deck</p>
-          <BacklogBars snapshots={snapshots} />
-        </section>
-        <section className="card">
-          <p className="card-label"><Tags size={13} />Weakest tags — lowest retention (min 8 reviews)</p>
-          <WeakTags reviews={reviews} />
-        </section>
-        <section className="card">
-          <p className="card-label"><Bug size={13} />Leeches — cards you keep failing</p>
-          <Leeches reviews={reviews} />
-        </section>
-        <section className="card">
-          <p className="card-label"><Target size={13} />Calibration check</p>
-          <Calibration reviews={reviews} />
-        </section>
-      </Collapsible>
+        <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+          <Collapsible title="Maintenance" icon={Layers}>
+            <section className="card">
+              <p className="card-label"><Layers size={13} />Backlog by deck</p>
+              <BacklogBars snapshots={snapshots} />
+            </section>
+            <section className="card">
+              <p className="card-label"><Tags size={13} />Weakest tags — lowest retention (min 8 reviews)</p>
+              <WeakTags reviews={reviews} />
+            </section>
+            <section className="card">
+              <p className="card-label"><Bug size={13} />Leeches — cards you keep failing</p>
+              <Leeches reviews={reviews} />
+            </section>
+            <section className="card">
+              <p className="card-label"><Target size={13} />Calibration check</p>
+              <Calibration reviews={reviews} />
+            </section>
+          </Collapsible>
+        </div>
+      </div>
     </>
   );
 }
