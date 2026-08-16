@@ -1,0 +1,91 @@
+/* Analytics rings card */
+
+.analytics-rings-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.analytics-rings-body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.analytics-rings-svg-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.analytics-rings-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.analytics-rings-center-value {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.analytics-rings-center-label {
+  margin-top: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+
+.analytics-rings-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 160px;
+  flex: 1;
+}
+
+.analytics-rings-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.analytics-rings-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.analytics-rings-legend-label {
+  flex: 1;
+  opacity: 0.75;
+}
+
+.analytics-rings-legend-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 420px) {
+  .analytics-rings-body {
+    justify-content: center;
+  }
+  .analytics-rings-svg-wrap {
+    width: 180px;
+    height: 180px;
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-16T00:00:00+08:00",
+  "title": "Design System: Study OS",
+  "extensions": {
+    "provenance": {
+      "conceptSeed": "f1e95899",
+      "directionSelection": "degraded direction roll (no external challengers)",
+      "directionContract": "Study Command Desk — desktop-first calm academic workspace; persistent rail, mint/teal active and primary action color, mission-first dashboard, compact white data panels, mobile bottom nav.",
+      "artifactAuthority": "src/App.jsx, src/index.css, src/components/MissionHero.jsx, src/components/SummaryStrip.jsx"
+    },
+    "colorMeta": {
+      "page": { "role": "neutral", "displayName": "Paper Field", "canonical": "#f6f8f5", "tonalRamp": ["#18231d", "#26372d", "#3e5749", "#587867", "#789b85", "#a5bea9", "#d1dfd2", "#f6f8f5"] },
+      "surface": { "role": "neutral", "displayName": "White Work Surface", "canonical": "#ffffff", "tonalRamp": ["#18231d", "#354039", "#59645d", "#7d8780", "#a6aea9", "#ced4cf", "#e7ebe8", "#ffffff"] },
+      "teal": { "role": "primary", "displayName": "Command Teal", "canonical": "#177358", "tonalRamp": ["#092c21", "#0d4534", "#125e46", "#177358", "#37907a", "#67ae99", "#a8d1c1", "#e7f3ed"] },
+      "amber": { "role": "secondary", "displayName": "Study Amber", "canonical": "#bf7a26", "tonalRamp": ["#442604", "#673c09", "#8e560f", "#bf7a26", "#d99a4a", "#eabf82", "#f5dfbd", "#fff4e3"] },
+      "red": { "role": "tertiary", "displayName": "Risk Red", "canonical": "#b84e4c", "tonalRamp": ["#420d14", "#651d22", "#8c3032", "#b84e4c", "#d17670", "#e8a39a", "#f3cdc6", "#fdecea"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Mission Display", "purpose": "Daily mission statement only." },
+      "title": { "displayName": "Workspace Title", "purpose": "Masthead page title." },
+      "body": { "displayName": "Operational Body", "purpose": "Status and supporting explanations." },
+      "label": { "displayName": "Compact Label", "purpose": "Cards, summary labels, and navigation metadata." }
+    },
+    "shadows": [
+      { "name": "application-shell", "value": "0 24px 70px rgba(34, 57, 44, 0.09)", "purpose": "Desktop app boundary only." },
+      { "name": "active-rail", "value": "0 6px 14px rgba(23,115,88,.16)", "purpose": "Selected desktop route." },
+      { "name": "mission-action", "value": "0 8px 16px rgba(23,115,88,.16)", "purpose": "Checklist completion action." },
+      { "name": "bottom-nav", "value": "0 -8px 24px rgba(36,54,43,.05)", "purpose": "Mobile navigation separation." }
+    ],
+    "motion": [
+      { "name": "standard-state", "value": "0.18s ease", "purpose": "Navigation and compact control state changes." },
+      { "name": "summary-enter", "value": "0.28s easeOut; stagger 0.06s; y 8px to 0", "purpose": "Summary metric entrance." },
+      { "name": "action-spring", "value": "spring stiffness 400, damping 20", "purpose": "Mission action hover and tap." },
+      { "name": "reduced-motion", "value": "prefers-reduced-motion: reduce", "purpose": "Disables animation and transitions." }
+    ],
+    "breakpoints": [
+      { "name": "mobile-command-desk", "value": "760px", "purpose": "Hide rail, stack mission hero, and show fixed bottom navigation." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Active Rail Navigation",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "Persistent desktop workspace route selection.",
+      "html": "<button class=\"ds-rail-item\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z\"/></svg><span>Dashboard</span></button>",
+      "css": ".ds-rail-item { display:flex; align-items:center; gap:11px; width:100%; padding:11px; border:0; border-radius:10px; background:#177358; color:#fff; box-shadow:0 6px 14px rgba(23,115,88,.16); font:500 13px 'DM Sans',sans-serif; text-align:left; transition:background-color .18s ease,transform .18s ease; } .ds-rail-item:hover { background:#105e47; } .ds-rail-item:focus-visible { outline:2px solid #bf7a26; outline-offset:2px; } .ds-rail-item svg { width:18px; height:18px; fill:currentColor; }"
+    },
+    {
+      "name": "Mission Checklist Action",
+      "kind": "button",
+      "refersTo": "mission-action",
+      "description": "Primary daily completion action inside the mission hero.",
+      "html": "<button class=\"ds-mission-action\"><strong>67%</strong><span>4/6 today</span></button>",
+      "css": ".ds-mission-action { min-width:96px; padding:13px 16px; border:1px solid #177358; border-radius:13px; background:#177358; color:#fff; box-shadow:0 8px 16px rgba(23,115,88,.16); cursor:pointer; font-family:'DM Sans',sans-serif; text-align:center; transition:background .18s ease,transform .18s ease; } .ds-mission-action strong { display:block; font-size:25px; line-height:1; letter-spacing:-.05em; } .ds-mission-action span { display:block; margin-top:6px; color:rgba(255,255,255,.82); font-size:10px; } .ds-mission-action:hover { background:#105e47; transform:translateY(-1px); } .ds-mission-action:focus-visible { outline:2px solid #bf7a26; outline-offset:2px; }"
+    },
+    {
+      "name": "Summary Metric",
+      "kind": "card",
+      "refersTo": "summary-cell",
+      "description": "Compact scan-first performance metric card.",
+      "html": "<article class=\"ds-summary\"><strong>284</strong><span>reviews today</span></article>",
+      "css": ".ds-summary { min-height:112px; padding:19px; border:1px solid #e1e7e0; border-radius:14px; background:#fff; font-family:'DM Sans',sans-serif; } .ds-summary strong { display:block; margin-bottom:9px; color:#177358; font-size:26px; font-weight:700; line-height:1; letter-spacing:-.045em; } .ds-summary span { color:#718078; font-size:11px; }"
+    },
+    {
+      "name": "Information Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flat bordered container for supporting study facts.",
+      "html": "<section class=\"ds-card\"><p>Readiness</p><strong>On track for today.</strong></section>",
+      "css": ".ds-card { padding:22px 23px; border:1px solid #e1e7e0; border-radius:16px; background:#fff; color:#18231d; font-family:'DM Sans',sans-serif; } .ds-card p { margin:0 0 17px; color:#4e5d55; font-size:11px; font-weight:700; letter-spacing:.02em; } .ds-card strong { font-size:15px; }"
+    },
+    {
+      "name": "Mobile Bottom Navigation",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "Fixed mobile route navigation with amber active state.",
+      "html": "<nav class=\"ds-bottom-nav\"><button class=\"ds-bottom-item ds-active\">Dashboard</button><button class=\"ds-bottom-item\">Weekly</button><button class=\"ds-bottom-item\">Semester</button></nav>",
+      "css": ".ds-bottom-nav { display:flex; gap:6px; padding:8px 6px; border-top:1px solid #e1e7e0; background:rgba(255,255,255,.96); box-shadow:0 -8px 24px rgba(36,54,43,.05); font-family:'DM Sans',sans-serif; } .ds-bottom-item { flex:1; padding:8px 2px; border:0; background:transparent; color:#718078; font-size:10px; } .ds-bottom-item.ds-active { color:#bf7a26; font-weight:700; } .ds-bottom-item:focus-visible { outline:2px solid #bf7a26; outline-offset:2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Study Command Desk",
+    "overview": "Study OS is a calm academic workspace: a desktop-first desk with a persistent pale-mint rail, a white working canvas, and a single deep-teal action voice. It makes study reality legible through compact data panels and a mission-first opening state rather than turning the dashboard into a wall of urgency.\n\nThe system uses soft green-tinted neutrals, tight information density, and restrained rounded geometry. The mission panel is the one contextual highlight; all other cards stay quiet so current priorities, performance status, and planning controls can be scanned without competing visual treatments. On narrow viewports, the desk becomes a full-bleed mobile workspace with bottom navigation.",
+    "keyCharacteristics": ["Desktop rail and white work surface framed as one rounded application shell.", "Teal is reserved for the active route, primary completion action, and positive data status.", "The mission panel leads the dashboard; compact white panels organize the supporting facts.", "Mobile removes the rail and restores persistent bottom navigation."],
+    "rules": [
+      { "name": "The One Teal Voice Rule", "body": "Teal signifies selection, direct action, or healthy status. Do not turn every panel, badge, or decorative accent teal.", "section": "colors" },
+      { "name": "The Mission-First Type Rule", "body": "Give the day’s next priority the largest type; cards report evidence and should not compete with it.", "section": "typography" },
+      { "name": "The Quiet Cards Rule", "body": "Standard information cards stay flat; do not add hover lift or decorative shadows to routine study data.", "section": "elevation" }
+    ],
+    "dos": ["Do keep the desktop rail persistent above 760px and move primary routes into the bottom navigation at or below that breakpoint.", "Do lead the dashboard with a specific mission and a visible completion action before supporting metrics.", "Do use white, bordered panels with compact spacing for recurring data; reserve the pale green gradient for the mission hero.", "Do use teal for active, actionable, and healthy states; use amber and red only for warning and critical signals.", "Do respect reduced-motion preferences: the build disables animation and transition when the user requests it."],
+    "donts": ["Don't add broad card shadows, card hover lift, or glass effects to ordinary panels.", "Don't promote the legacy Newsreader or JetBrains Mono declarations into new command-desk display styles; the shipped workspace uses DM Sans for its visible hierarchy.", "Don't make every metric or navigation item colorful; color belongs to status and selection.", "Don't retain the desktop rail on mobile or let content sit behind the fixed bottom navigation."]
+  }
+}
